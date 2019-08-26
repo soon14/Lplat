@@ -1,0 +1,8 @@
+
+<propertyFiles-config>
+	<propertyFiles>
+		<!-- for demo  -->
+		<!--  <add-file path="com/zengshi/core/examples/config/demo.properties" />-->
+	</propertyFiles>
+
+</propertyFiles-config>

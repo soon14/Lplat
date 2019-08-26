@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd"
+	>
+	
+	<bean class="com.zengshi.ecp.base.util.ApplicationContextUtil"></bean>
+	
+	 <bean class="com.zengshi.butterfly.core.web.spring.ConfigAnnotationBeanPostProcessor"></bean>
+	 <bean class="com.zengshi.butterfly.core.spring.BeanFactory" scope="singleton" lazy-init="false"/>
+<!--
+	<context:annotation-config />
+     <context:component-scan base-package="com.zengshi.controller" /> -->
+        
+   <!-- 	<bean class="com.zengshi.butterfly.core.web.spring.ExtendedPropertyPlaceholderConfigurer">
+		<property name="loadListener"><bean class="com.zengshi.butterfly.core.config.XMLLoaderListener" p:resource="classpath:application.xml"></bean></property>
+	</bean> -->
+    <bean id="monitor" class="com.zengshi.butterfly.core.monitor.MonitorAspect" scope="prototype" /> 
+        
+     <bean id="permission" class="com.zengshi.butterfly.core.security.PermissionAspect" scope="prototype" /> 
+    <!--  <bean class="com.zengshi.butterfly.core.service.SecurityCheckImpl" name="securityCheck"></bean>   -->
+    <import resource="classpath*:/plat/**/applicationContext.xml" />
+    <import resource="classpath:applicationContext-resource.xml" />
+    <!--<import resource="classpath*:applicationContext-*.xml"/>-->
+</beans>

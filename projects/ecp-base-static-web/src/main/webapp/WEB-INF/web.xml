@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<servlet>
+		<servlet-name>mobile</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>javax.ws.rs.Application</param-name>
+			<param-value>com.zengshi.paas.rest.RestApplication</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>mobile</servlet-name>
+		<url-pattern>/removestatic/*</url-pattern>
+	</servlet-mapping>
+ 
+	<servlet>
+		<servlet-name>imageServer</servlet-name>
+		<servlet-class>com.zengshi.paas.image.ImageServlet</servlet-class>
+		<load-on-startup>-1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>imageServer</servlet-name>
+		<url-pattern>/image/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>htmlServer</servlet-name>
+		<servlet-class>com.zengshi.paas.image.StaticHtmlServlet</servlet-class>
+		<load-on-startup>-1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>htmlServer</servlet-name>
+		<url-pattern>/static/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>UpImageServlet</servlet-name>
+		<servlet-class>com.zengshi.paas.image.UpImageServlet</servlet-class>
+		<load-on-startup>-1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UpImageServlet</servlet-name>
+		<url-pattern>/upImage</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet-mapping>
+        <servlet-name>UploadServlet</servlet-name>
+        <url-pattern>/UploadServlet</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <description/>
+        <display-name>UploadServlet</display-name>
+        <servlet-name>UploadServlet</servlet-name>
+        <servlet-class>com.zengshi.paas.web.UploadServlet</servlet-class>
+    </servlet>
+    
+	
+	<welcome-file-list>
+		<welcome-file>/index.jsp</welcome-file>
+	</welcome-file-list>
+</web-app>

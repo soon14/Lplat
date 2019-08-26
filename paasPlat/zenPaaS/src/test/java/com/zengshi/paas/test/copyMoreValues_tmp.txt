@@ -1,0 +1,18 @@
+public DescBO copyMoreValues(DescBO descVO,SrcDTO srcVO) {
+	descVO.setDate(srcVO.getDate());
+	descVO.setUtilDate(srcVO.getUtilDate());
+	descVO.setStr(srcVO.getStr());
+	descVO.setI(srcVO.getI());
+	descVO.setL(srcVO.getL());
+	descVO.setBg(srcVO.getBg());
+	descVO.setStrs(srcVO.getStrs());
+	descVO.setLst(srcVO.getLst());
+	descVO.setUtilDate(srcVO.getUtilDate());
+	descVO.setStr(srcVO.getStr());
+	descVO.setI(srcVO.getI());
+	descVO.setL(srcVO.getL());
+	descVO.setBg(srcVO.getBg());
+	descVO.setStrs(srcVO.getStrs());
+	descVO.setLst(srcVO.getLst());
+	return descVO;
+}

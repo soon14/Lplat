@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.distribute.tx.transaction.TransactionContextMapper">
+
+  <resultMap type="com.distribute.tx.transaction.TransactionContext" id="transactionContextResult">
+    <result column="transaction_id" jdbcType="BIGINT" property="transactionId"/> 
+    <result column="name" jdbcType="VARCHAR" property="name"/>
+    <result column="content" jdbcType="VARCHAR" property="content"/>    
+    <result column="status" jdbcType="SMALLINT" property="status"/>   
+    <result column="status_time" jdbcType="DATE" property="statusTime"/>
+    <result column="start_time" jdbcType="BIGINT" property="startTime"/>
+    <result column="finish_time" jdbcType="BIGINT" property="finishTime"/> 
+    <result column="send_times" jdbcType="SMALLINT" property="sendTimes"/>     
+    <result column="participant_amount" jdbcType="SMALLINT" property="participantAmount"/>
+    <result column="total_participants" jdbcType="VARCHAR" property="totalParticipants"/>
+    <result column="succeed_participants" jdbcType="VARCHAR" property="succeedParticipants"/>
+    <result column="failed_participants" jdbcType="VARCHAR" property="failedParticipants"/>
+    <result column="distribute_tablename" jdbcType="VARCHAR" property="distributeTableName"/>
+    <result column="distribute_id" jdbcType="VARCHAR" property="distributeId"/>
+  </resultMap>
+  
+  <select id="queryById" parameterType="java.lang.Long" resultMap="transactionContextResult">
+    select transaction_id, name, content, status, status_time,start_time,distribute_tablename,distribute_id,
+      finish_time, send_times, participant_amount, total_participants, succeed_participants, failed_participants
+    from transaction_context where transaction_id = #{transactionId,jdbcType=BIGINT}
+  </select>
+  
+  <select id="queryAbnormalTransaction" parameterType="java.lang.Long" resultMap="transactionContextResult">
+  <![CDATA[
+    select transaction_id, name, content, status, status_time,start_time,distribute_tablename,distribute_id,
+      finish_time, send_times, participant_amount, total_participants, succeed_participants, failed_participants
+    from transaction_context where status in(10,20,30,70,71,80,81) and status_time < 
+    date_sub(sysdate(),interval (#{interval} * (send_times+1)) second)
+  ]]>
+  </select>
+  
+  <insert id="insert" parameterType="com.distribute.tx.transaction.TransactionContext">
+    insert into transaction_context(transaction_id, name, content, status, status_time,start_time,
+      finish_time, send_times, participant_amount, total_participants, succeed_participants, failed_participants,distribute_tablename,distribute_id) 
+    values (#{transactionId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, #{statusTime,jdbcType=DATE,jdbcType=VARCHAR},
+      #{startTime,jdbcType=BIGINT}, #{finishTime,jdbcType=BIGINT}, #{sendTimes,jdbcType=SMALLINT}, #{participantAmount,jdbcType=SMALLINT}, #{totalParticipants,jdbcType=VARCHAR}, 
+      #{succeedParticipants,jdbcType=VARCHAR}, #{failedParticipants,jdbcType=VARCHAR},#{distributeTableName,jdbcType=VARCHAR},#{distributeId,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="update" parameterType="com.distribute.tx.transaction.TransactionContext" >
+    update transaction_context
+    <set>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="statusTime != null" >
+        status_time = #{statusTime,jdbcType=DATE},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=BIGINT},
+      </if>
+      <if test="finishTime != null" >
+        finish_time = #{finishTime,jdbcType=BIGINT},
+      </if>  
+      <if test="sendTimes != null" >
+        send_times = #{sendTimes,jdbcType=SMALLINT},
+      </if>
+      <if test="participantAmount != null" >
+        participant_amount = #{participantAmount,jdbcType=SMALLINT},
+      </if>
+      <if test="totalParticipants != null" >
+        total_participants = #{totalParticipants,jdbcType=VARCHAR},
+      </if>
+      <if test="succeedParticipants != null" >
+        succeed_participants = #{succeedParticipants,jdbcType=VARCHAR},
+      </if>
+      <if test="failedParticipants != null" >
+        failed_participants = #{failedParticipants,jdbcType=VARCHAR},
+      </if>
+      <if test="distributeTableName != null" >
+        distribute_tablename = #{distributeTableName,jdbcType=VARCHAR},
+      </if>
+      <if test="distributeId != null" >
+        distribute_id = #{distributeId,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where transaction_id = #{transactionId,jdbcType=BIGINT}
+  </update> 
+</mapper>

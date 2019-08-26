@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+        ">
+        
+	<!--<bean id="cc" class="com.zengshi.paas.client.ConfigurationCenter" init-method="init">
+        <constructor-arg value="dlxels01:2181,dlxels02:2181,dlxels03:2181"/>
+        <constructor-arg value="P"/>
+        <property name="auth" value="7e6161fe018bd4054414cbc9999fee89f9110662f8981993"/>
+    </bean>-->
+    <bean id="cc" class="com.zengshi.paas.client.ConfigurationCenter" init-method="init">
+        <constructor-arg value="127.0.0.1:2181"/>
+        <!--第二个参数 D 或者 P；D表示开发模式；P表示生产环境-->
+        <constructor-arg value="P"/>
+        <property name="auth" value="8a78075ed3a684eca481221b2e5a1e4ea88587df2a24f820"/>
+    </bean>
+    <!-- <bean id="transactionManager" class="com.zengshi.paas.client.tx.TransactionManager" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/tx/transactionManager"/>
+    </bean>-->
+    <!--日志消息发送-->
+    <bean id="logMessageSender" class="com.zengshi.paas.client.message.MessageSender" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/message/logMessageSender"/>
+    </bean>
+    <!--通用消息发送-->
+    <bean id="messageSender" class="com.zengshi.paas.client.message.MessageSender" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/message/messageSender"/>
+    </bean>
+   
+    <!--日志信息写入 mongodb-->
+    <bean id="logWriter" class="com.zengshi.paas.client.log.MongoLogWriter" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/logger/conf"/>
+    </bean>
+    <!--跟踪日志信息写入 mongodb-->
+    <bean id="tradeLogWriter" class="com.zengshi.paas.client.log.MongoLogWriter" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/logger/tradeLogWriter"/>
+    </bean>
+    <!--文件信息写入 mongodb-->
+    <bean id="fileManager" class="com.zengshi.paas.client.file.MongoFileManager" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/file/conf"/>
+    </bean>
+    <!--redis cache-->
+    <bean id="cacheSvc" class="com.zengshi.paas.client.cache.CacheSvcImpl" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/cache/conf"/>
+    </bean>
+    <!--
+    <bean id="secureFileRepo" class="com.zengshi.paas.client.file.MongoFileManager" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/file/secureFileRepo"/>
+    </bean>
+    
+    <bean id="sessionManager" class="com.zengshi.paas.client.session.v1.SessionManager" init-method="init">
+             <property name="cc" ref="cc"/>
+             <property name="confPath" value="/com/zengshi/paas/session/conf"/>
+    </bean>
+    -->
+    
+    <!--
+    <bean id="signature" class="com.zengshi.paas.client.security.SHA1WithRSASignature" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/secure/conf"/>
+        <property name="secureFileRepo" ref="secureFileRepo"/>
+    </bean>
+    
+    <bean id="chinaPaySignature" class="com.zengshi.paas.client.security.ChinaPaySignature" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/secure/chinaPaySign"/>
+        <property name="secureFileRepo" ref="secureFileRepo"/>
+    </bean>
+    
+    <bean id="umsPaySignature" class="com.zengshi.paas.client.security.UmsPaySignature" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/secure/umsPaySign"/>
+        <property name="secureFileRepo" ref="secureFileRepo"/>
+    </bean>
+    
+    <bean id="desCipher" class="com.zengshi.paas.client.cipher.DesCipher" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/cipher/desCipher"/>
+        <property name="secureFileRepo" ref="secureFileRepo"/>
+    </bean>
+    
+    <bean id="unionSignMgr" class="com.zengshi.paas.client.security.SignatureUtilManager" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/secure/signatureUtilManager"/>
+        <property name="secureFileRepo" ref="secureFileRepo"/>
+    </bean>
+    -->
+    <!--
+    <bean id="ruleRepo" class="com.zengshi.paas.client.file.MongoFileManager" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/file/ruleRepo"/>
+    </bean>
+    
+    <bean id="easyLinkHttpClient" class="com.zengshi.paas.client.http.HttpClientManager" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/http/easyLinkHttpClient"/>
+    </bean>
+    <bean id="hongpayHttpClient" class="com.zengshi.paas.client.http.HttpClientManager" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/http/hongpayHttpClient"/>
+    </bean>
+    
+    <bean id="configurationMgr" class="com.zengshi.paas.client.cfg.ConfigurationMgr" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/cfg/configurationMgr"/>
+    </bean>
+    -->
+</beans>

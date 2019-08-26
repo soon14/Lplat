@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+        ">
+	<bean id="cc" class="com.zengshi.paas.client.ConfigurationCenter">
+		<constructor-arg
+			value="10.8.0.213:22181,133.0.43.196:2181,133.0.43.196:2182" />
+		<constructor-arg value="P" />
+	</bean>
+	<!--bean id="cc" class="com.zengshi.paas.client.ConfigurationCenter"> <constructor-arg 
+		value="10.211.55.5:2181,10.211.55.6:2181,10.211.55.7:2181"/> <constructor-arg 
+		value="D"/> </bean> -->
+	<!--<bean id="clientMessageSender" class="com.zengshi.paas.client.tx.TxMessageSender" 
+		init-method="init"> <property name="cc" ref="cc"/> <property name="confPath" 
+		value="/com/zengshi/paas/tx/clientMessageSender"/> </bean> <bean id="listener" 
+		class="com.zengshi.paas.client.tx.SubTransactionSample"/> <bean id="transactionInvoker" 
+		class="com.zengshi.paas.client.tx.TransactionInvoker" init-method="init"> <property 
+		name="cc" ref="cc"/> <property name="listener" ref="listener"/> <property 
+		name="clientMessageSender" ref="clientMessageSender"/> <property name="confPath" 
+		value="/com/zengshi/paas/tx/transactionInvoker"/> <property name="groupId" value="sample_group"/> 
+		<property name="monitorTopicList"> <list> <value>business-topic</value> </list> 
+		</property> </bean> -->
+
+	<bean id="messageListener" class="com.zengshi.paas.message.MessageListenerSample" />
+	<bean id="messageConsumer" class="com.zengshi.paas.message.MessageConsumer"
+		init-method="init">
+		<property name="cc" ref="cc" />
+		<property name="listener" ref="messageListener" />
+		<property name="confPath" value="/com/zengshi/paas/message/messageConsumer" />
+		<property name="groupId" value="sample_message_group" />
+		<property name="monitorTopicList">
+			<list>
+				<value>message-topic</value>
+			</list>
+		</property>
+	</bean>
+</beans>

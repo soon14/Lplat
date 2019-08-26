@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.distribute.tx.common.TransactionMapper">
+
+
+  <resultMap type="com.distribute.tx.common.Transaction" id="transactionResult">
+    <result column="name" jdbcType="VARCHAR" property="name"/>
+    <result column="participant_num" jdbcType="SMALLINT" property="participantNum"/>
+    <result column="participants" jdbcType="VARCHAR" property="participants"/>
+  </resultMap>
+  
+  <select id="queryById" parameterType="java.lang.String" resultMap="transactionResult">
+    select name, participant_num, participants
+    from transaction where name = #{name,jdbcType=VARCHAR}
+  </select>
+  
+  <insert id="insert" parameterType="com.distribute.tx.common.Transaction">
+    insert into transaction (name, participant_num, participants)
+    values (#{name,jdbcType=VARCHAR}, #{participantNum,jdbcType=SMALLINT}, #{participants,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="update" parameterType="com.distribute.tx.common.Transaction" >
+    update transaction
+    <set>
+    	<if test="participantNum != null" >
+        	participant_num = #{participantNum,jdbcType=SMALLINT},
+      	</if>
+      	<if test="participants != null" >
+       		participants = #{participants,jdbcType=VARCHAR}
+      	</if>
+    </set>
+    where name = #{name,jdbcType=VARCHAR}
+  </update>
+  
+</mapper>

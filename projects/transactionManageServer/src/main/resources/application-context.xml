@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop 
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+	
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath*:zknode.properties</value>
+				<value>classpath*:config.properties</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 自动 注入 参数配置 -->
+	<context:component-scan base-package="com.zengshi.ecp.transaction.transactionManageServer" />
+	
+	<bean id="cc" class="com.zengshi.paas.ConfigurationCenter" init-method="init">
+		<constructor-arg value="${zk.server.address}"/>
+		<constructor-arg value="P"/>
+		<property name="auth" value="${cc.auth}"/>
+	</bean>
+	
+	<bean id="db_common" class="com.db.logic.LogicDBDataSource" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="${db_common}"/>
+    </bean>
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+	  <constructor-arg index="0" ref="sqlSessionFactoryCommon" />
+	  <!--<constructor-arg index="1" value="BATCH" />  如果想要进行批量操作可加入这个属性 --> 
+	</bean>
+     
+    <bean id="sqlSessionFactoryCommon" class="org.mybatis.spring.SqlSessionFactoryBean">  
+        <property name="dataSource" ref="db_common" />  
+        <property name="mapperLocations" value="classpath*:sqlMapper/${database.name}/*.xml" />
+    </bean>
+     <bean id="transactionManagerServer" class="com.distribute.tx.server.TransactionManagerServer" init-method="init">
+    	<property name="cc" ref="cc"/>
+    	<property name="confPath" value="${transactionManagerServer}"/>
+    	<property name="publisher" ref="transactionPublisher"/>
+    	<property name="cacheSvc" ref="cacheSvc"></property>
+    	
+    	<property name="transactionDAO" ref="transactionDAO"></property>
+    	<property name="newTransactionProcessor">
+    		<bean class="com.distribute.tx.server.NewTransactionProcessor">
+    			<property name="contextDAO" ref="transactionContextDAO"></property>
+    			<property name="tt" ref="transactionTemplate"></property>
+    		</bean>
+    	</property>
+    	<property name="chgTransactionProcessor">
+    		<bean class="com.distribute.tx.server.ChgTransactionProcessor">
+    			<property name="cacheSvc" ref="cacheSvc"></property>
+    			<property name="transactionDAO" ref="transactionDAO"></property>
+    			<property name="contextDAO" ref="transactionContextDAO"></property>
+    			<property name="tt" ref="transactionTemplate"></property>
+    		</bean>
+    	</property>
+    </bean>
+    <bean id="cacheSvc" class="com.zengshi.paas.cache.remote.RemoteCacheSVCImpl" init-method="init">
+    	<property name="cc" ref="cc"/>
+    	<property name="confPath" value="${cacheSvc}"></property>
+    </bean>
+    <bean id="transactionPublisher" class="com.distribute.tx.common.TransactionPublisher" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="${transactionPublisher}"/>
+    </bean>
+    <bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager">
+			<ref local="txManagerCommon" />
+		</property>
+	</bean>
+	<!--事务管理DataSourceTransactionManager-->   
+    <bean id="txManagerCommon" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
+        <property name="dataSource" ref="db_common" />  
+    </bean>
+	<!--异常事务定时轮询-->
+	<!--<bean name="quartz" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">-->
+		<!--<property name="triggers">-->
+			<!--<list>-->
+				<!--<ref bean="abnormalTransactionProcessorCron"/>-->
+			<!--</list>-->
+		<!--</property>-->
+	<!--</bean>-->
+	<!--<bean id="abnormalTransactionProcessorCron"  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">-->
+		<!--<property name="jobDetail">-->
+			<!--<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
+				<!--<property name="targetObject" ref="abnormalTransactionProcessor" />-->
+				<!--<property name="targetMethod" value="processAbnormalTransaction" />-->
+				<!--<property name="concurrent" value="false" />-->
+			<!--</bean>-->
+		<!--</property>-->
+		<!--<property name="cronExpression" value="${quartz.cronExpression}" />-->
+	<!--</bean>-->
+    <bean id="abnormalTransactionProcessorCron"  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <bean class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+                <property name="jobClass" value="com.zengshi.ecp.transaction.transactionManageServer.quartz.EcpQuartzJobBean"/>
+                <property name="jobDataAsMap">
+                    <map>
+                        <entry key="targetObject" value="abnormalTransactionProcessor"/>
+                        <entry key="targetMethod" value="processAbnormalTransaction"/>
+                    </map>
+                </property>
+                <property name="durability" value="true"/>
+                <property name="name" value="jobDetail"/>
+            </bean>
+        </property>
+        <property name="cronExpression" value="${quartz.cronExpression}" />
+    </bean>
+	<bean id="abnormalTransactionResourceDispatcher" class="com.zengshi.paas.dispatcher.ResourceDispatcher" init-method="init">
+		<property name="cc" ref="cc"/>
+		<property name="confPath" value="${abnormalTransactionResourceDispatcher}"/>
+		<property name="executor" ref="abnormalTransactionProcessor"/>
+		<property name="resourceId" value="abnormalTransactionProcessor"/>
+	</bean>
+	<bean id="abnormalTransactionProcessor" class="com.distribute.tx.server.AbnormalTransactionProcessor" init-method="init">
+		<property name="contextDAO" ref="transactionContextDAO" />
+		<property name="publisher" ref="transactionPublisher"/>
+		<property name="cc" ref="cc"/>
+		<property name="confPath" value="${abnormalTransactionProcessor}"/>
+	</bean>
+
+	<bean autowire="no" id="quartz" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="dataSource">
+			<ref local="db_common"/>
+		</property>
+		<property name="quartzProperties">
+			<props>
+				<prop key="org.quartz.scheduler.instanceName">quartzScheduler</prop>
+				<prop key="org.quartz.scheduler.instanceId">AUTO</prop>
+				<prop key="org.quartz.threadPool.class">org.quartz.simpl.SimpleThreadPool</prop>
+				<prop key="org.quartz.threadPool.threadCount">3</prop>
+				<prop key="org.quartz.threadPool.threadPriority">5</prop>
+				<prop key="org.quartz.jobStore.misfireThreshold">60000</prop>
+				<prop key="org.quartz.jobStore.class">org.quartz.impl.jdbcjobstore.JobStoreTX</prop>
+				<prop key="org.quartz.jobStore.driverDelegateClass">${quartz.driverDelegateClass}</prop>
+				<prop key="org.quartz.jobStore.selectWithLockSQL">SELECT * FROM {0}LOCKS UPDLOCK WHERE LOCK_NAME = ?</prop>
+				<prop key="org.quartz.jobStore.tablePrefix">QRTZ_</prop>
+				<prop key="org.quartz.jobStore.isClustered">true</prop>
+				<prop key="org.quartz.jobStore.clusterCheckinInterval">20000</prop>
+			</props>
+		</property>
+		<property name="applicationContextSchedulerContextKey" value="applicationContextKey"/>
+		<property name="autoStartup" value="true"/>
+		<property name="triggers">
+			<list>
+				<ref bean="abnormalTransactionProcessorCron"/>
+			</list>
+		</property>
+	</bean>
+    <bean class="com.zengshi.ecp.transaction.transactionManageServer.util.EcpFrameContextHolder"/>
+</beans>

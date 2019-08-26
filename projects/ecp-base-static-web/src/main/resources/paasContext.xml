@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+        ">
+        <!-- 
+	<bean id="confCenter" class="com.zengshi.paas.config.ConfigurationCenter" init-method="init" destroy-method="destory">
+        <constructor-arg value="127.0.0.1:29181"/>
+        <constructor-arg value="10000"/>
+        <constructor-arg value="P"/>
+        <constructor-arg>
+        	<list>
+        		<value>/paasConf.properties</value>
+      		</list>
+        </constructor-arg>
+        <property name="createZKNode" value="true"/>
+    </bean>
+     -->
+    <bean id="cc" class="com.zengshi.paas.ConfigurationCenter" init-method="init">
+        <!--<constructor-arg value="127.0.0.1:2181"/>-->
+        <constructor-arg value="127.0.0.1:22181"/>
+        <!--第二个参数 D 或者 P；D表示开发模式；P表示生产环境-->
+        <constructor-arg value="P"/>
+        <property name="auth" value="8a78075ed3a684eca481221b2e5a1e4ea88587df2a24f820"/>
+    </bean>
+	<!--文件信息写入 mongodb-->
+    <bean id="fileManager" class="com.zengshi.paas.file.MongoFileManagerSVCImpl" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/file/conf"/>
+    </bean>
+    <!-- 
+    <bean id="fileManager" class="com.zengshi.paas.file.impl.MongoFileManager" init-method="init" destroy-method="destroy">
+        <property name="confCenter" ref="confCenter"/>
+        <property name="confPath" value="/com/zengshi/paas/file/conf"/>
+    </bean>
+     -->
+     <!--redis cache-->
+    <bean id="cacheSvc" class="com.zengshi.paas.cache.remote.RemoteCacheSVCImpl" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/cache/conf"/>
+    </bean>
+    <!-- 
+    <bean id="cacheSv" class="com.zengshi.paas.cache.impl.RedisCache" init-method="init" destroy-method="destroy">
+        <property name="confCenter" ref="confCenter"/>
+        <property name="confPath" value="/com/zengshi/paas/cache/conf"/>
+    </bean>
+     -->
+   <bean id="imageSv" class="com.zengshi.paas.image.impl.GMImage" init-method="init">
+    	<property name="confCenter" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/gmimage/conf"/>
+   </bean> 
+</beans>

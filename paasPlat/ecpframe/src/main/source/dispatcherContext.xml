@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+        ">
+	<bean id="cc" class="com.zengshi.paas.client.ConfigurationCenter"
+		init-method="init">
+		<constructor-arg
+			value="10.8.0.213:22181,133.0.43.196:2181,133.0.43.196:2182" />
+		<constructor-arg value="P" />
+		<property name="auth"
+			value="7e6161fe018bd4054414cbc9999fee89f9110662f8981993" />
+	</bean>
+	<!--<bean id="cc" class="com.zengshi.paas.client.ConfigurationCenter" init-method="init"> 
+		<constructor-arg value="10.211.55.5:2181,10.211.55.6:2181,10.211.55.7:2181"/> 
+		<constructor-arg value="P"/> <property name="auth" value="7e6161fe018bd4054414cbc9999fee89f9110662f8981993"/> 
+		</bean> -->
+	<bean id="resourceDispatcher" class="com.zengshi.paas.dispatcher.ResourceDispatcher"
+		init-method="init">
+		<property name="cc" ref="cc" />
+		<property name="confPath" value="/com/zengshi/paas/dispatcher/conf" />
+		<property name="executor" ref="executor" />
+		<property name="resourceId" value="testResource" />
+	</bean>
+	<bean id="executor" class="com.zengshi.paas.dispatcher.ResourceExecutorTest">
+
+	</bean>
+</beans>

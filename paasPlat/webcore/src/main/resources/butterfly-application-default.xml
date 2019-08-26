@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+	<view>
+		<velocity>
+			<suffix>.vm</suffix> <!-- 默认的velocity文件后缀 -->
+			<path>/WEB-INF/velocity,classpath:view/vm</path>
+		</velocity>
+	</view>
+	
+	<project>
+		<theme>  <!-- 样式 -->
+			<path>/,classpath:</path>
+			<default>default</default>  <!-- 默认样式 -->
+			<useCache>true</useCache>
+			<domain></domain> <!-- 当前domain -->
+			<module></module> <!-- 当前模块 -->
+			<support></support> <!-- 支持的样式清单，逗号分割 -->
+			<request>
+				<paramkey>theme</paramkey>
+				<attrKey>__BUTTERFLY_THEME_NAME__</attrKey> <!-- request中的key值 -->
+			</request>
+			<cookie>
+				<key>__theme__</key> <!-- cookie中的theme key -->
+			</cookie>
+			<session>
+				<key>__BUTTERFLY_THEME_NAME__</key> <!-- session中的key值 -->
+			</session>
+		</theme>
+		
+		<cookie comment="cookie 配置信息">
+			<userinfo comment="用户cookie配置信息">
+				<cookieName>__sid__</cookieName>
+				<domain>.fly.com</domain>
+				<path>/</path>
+				<age>-1</age>
+				<encrypt>true</encrypt>
+				<encryptKey>ZhS38VT9$9mQ%TeIWF@iYtu8NKcIarBI</encryptKey>
+				<expireTime>__a__</expireTime>
+			</userinfo>
+		</cookie>
+	</project>
+</application>

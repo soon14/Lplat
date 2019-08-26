@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+  	<!--<bean id="cc" class="com.zengshi.paas.ConfigurationCenter" init-method="init">
+        <constructor-arg value="10.1.228.198:39181,10.1.228.199:39181,10.1.228.200:39181"/>
+        <constructor-arg value="P"/>
+        <property name="auth" value=""/>
+    </bean>-->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath*:zknode.properties</value>
+				<value>classpath*:config.properties</value>
+			</list>
+		</property>
+	</bean> 
+    <bean id="cc" class="com.zengshi.paas.ConfigurationCenter" init-method="init">
+        <constructor-arg value="${zk.server.address}"/>
+        <constructor-arg value="P"/>
+        <property name="auth" value="${cc.auth}"/>
+    </bean>
+     
+	<bean id="sqlCache" class="com.zengshi.paas.cache.remote.RemoteCacheSVCImpl" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="${sqlCache}"/>
+    </bean>
+    
+    <bean id="logic_db_common" class="com.db.logic.LogicDBDataSource" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="${db_common}"/>
+    </bean>
+    <!-- 
+	<bean id="logic_transaction_db_01" class="com.db.logic.LogicDBDataSource" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/db/distributeTransaction/logic_transaction_db_01"/>
+    </bean>
+    
+    <bean id="logic_transaction_db_02" class="com.db.logic.LogicDBDataSource" init-method="init">
+        <property name="cc" ref="cc"/>
+        <property name="confPath" value="/com/zengshi/paas/db/distributeTransaction/logic_transaction_db_02"/>
+    </bean>
+
+    <bean id="dbRule" class="com.db.distribute.DistributedDBRule"
+		init-method="init">
+		<property name="dbType" value="MYSQL" />
+		<property name="tableRules">
+			<map>
+				<entry key="t_demo_log" value-ref="demoLog" />
+				<entry key="t_demo_info" value-ref="demoInfo"/>
+			</map>
+		</property>
+		<property name="cacheSvc" ref="sqlCache"/>
+	</bean>
+	<bean id="demoLog" class="com.db.distribute.DistributedTableRule">
+		<property name="distributeKey" value="log_id" />
+		<property name="logicDBPattern" value="logic_transaction_db_{00}" />
+		<property name="tableNamePattern" value="t_demo_log_{00}" />
+		<property name="tableNameRule">
+			<value>{keyValue:{keyColumn:'db_code', tranferType:'com.db.util.StringHash', operator:'%',operatorValue:4}, operator:'+',operatorValue:1} </value>
+		</property>
+		<property name="logicDBRule">
+			<value>{keyValue:{keyValue:{keyColumn:'db_code', tranferType:'com.db.util.StringHash', operator:'%',operatorValue:4},operator:'/', operatorValue:2},operator:'+', operatorValue:1} </value>
+		</property>
+		<property name="allowFullTableScan" value="true" />
+		<property name="subTableCount" value="4" />
+	</bean>
+	
+	<bean id="demoInfo" class="com.db.distribute.DistributedTableRule">
+		<property name="distributeKey" value="id" />
+		<property name="logicDBPattern" value="logic_transaction_db_01" />
+		<property name="tableNamePattern" value="t_demo_info_{00}" />
+		<property name="tableNameRule">
+			<value>{keyValue:{keyColumn:'id', tranferType:'java.lang.Long', operator:'%',operatorValue:2}, operator:'+',operatorValue:1} </value>
+		</property>
+		<property name="logicDBRule">
+			<value>{keyValue:{keyColumn:'id', tranferType:'java.lang.Long', operator:'%',operatorValue:2}, operator:'+', operatorValue:1} </value>
+		</property>
+		<property name="allowFullTableScan" value="true" />
+		<property name="subTableCount" value="2" />
+	</bean>
+	 -->
+</beans>

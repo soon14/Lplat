@@ -1,0 +1,67 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.zengshi.paas</groupId>
+	<artifactId>paas-frame</artifactId>
+	<version>0.0.2-RELEASE</version>
+	<packaging>pom</packaging>
+
+	<distributionManagement>
+		<repository>
+			<id>central</id>
+			<name>Internal Releases</name>
+			<url>http://192.168.10.201:8082/artifactory/libs-release</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>Internal Snapshots</name>
+			<url>http://192.168.10.201:8082/artifactory/libs-snapshot</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<zenpaas-version>0.7.5-RELEASE</zenpaas-version>
+		<zenpaas.distributedDb-version>0.8.13-RELEASE</zenpaas.distributedDb-version>
+		<zenpaas.distributedTransaction-version>0.2.4.3-RELEASE</zenpaas.distributedTransaction-version>
+
+		<!--<ecp-server-start-client.version>0.2.23.5-RELEASE</ecp-server-start-client.version>-->
+		<!--<ecpwebcore-version>0.1.70-RELEASE</ecpwebcore-version>-->
+		<!--<webcore-version>0.1.7.3-RELEASE</webcore-version>-->
+		<!--<appwebcore-version>0.1.0-RELEASE</appwebcore-version>-->
+		<!--<ecpwebcore-version>0.1.2-RELEASE</ecpwebcore-version>-->
+		<!--<webcoreJs-version>0.0.1-RELEASE</webcoreJs-version>-->
+
+		<spring-version>3.2.7.RELEASE</spring-version>
+		<spring-data-jpa.version>1.3.2.RELEASE</spring-data-jpa.version>
+		<spring.security.version>3.2.6.RELEASE</spring.security.version>
+
+		<mybatis-version>3.2.3</mybatis-version>
+		<tomcat-jdbc.version>7.0.42</tomcat-jdbc.version>
+		<hibernate-validator.version>4.3.1.Final</hibernate-validator.version>
+		<json-lib.version>2.4</json-lib.version>
+		<slf4j.version>1.7.5</slf4j.version>
+		<commons-lang3.version>3.2.1</commons-lang3.version>
+		<commons-dbcp.version>1.4</commons-dbcp.version>
+		<mybatis-spring.version>1.2.0</mybatis-spring.version>
+		<jackson.version>2.1.5</jackson.version>
+		<log4j.version>1.2.17</log4j.version>
+		<com.alibaba.dubbo.version>2.5.3</com.alibaba.dubbo.version>
+		<com.alibaba.fastjson.version>1.2.28</com.alibaba.fastjson.version>
+		<aspectjweaver.version>1.7.4</aspectjweaver.version>
+		<el-api-version>2.2</el-api-version>
+		<jdbc.driver.groupId>mysql</jdbc.driver.groupId>
+		<jdbc.driver.artifactId>mysql-connector-java</jdbc.driver.artifactId>
+		<jdbc.driver.version>5.1.26</jdbc.driver.version>
+	</properties>
+	
+	<modules>
+		<module>zenPaaS</module>
+		
+		<module>distributedTransaction</module>
+		<module>ecpframe</module>
+		<module>webcore</module>
+		<module>app-webcore</module>
+		<module>distributedDb</module>
+	</modules>
+</project>
