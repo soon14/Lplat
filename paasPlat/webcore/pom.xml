@@ -21,7 +21,7 @@
 
     <velocity.version>1.7</velocity.version>
     <velocity.tools.version>1.4</velocity.tools.version>
-    <jackson-json-verion>2.2.3</jackson-json-verion>
+    <jackson-json-verion>2.10.1</jackson-json-verion>
     <joda-time.version>2.6</joda-time.version>
     
     <ecp-server-start-client.version>0.2.23.4-RELEASE</ecp-server-start-client.version>
